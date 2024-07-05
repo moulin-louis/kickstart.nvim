@@ -239,6 +239,18 @@ require('lazy').setup({
 
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
+  {
+    'vuki656/package-info.nvim',
+    requires = 'MunifTanjim/nui.nvim',
+    config = function()
+      require('package-info').setup {
+        autostart = true,
+        hide_up_to_date = true,
+        hide_unstable_versions = false,
+        package_manager = 'yarn',
+      }
+    end,
+  },
 
   {
     'pmizio/typescript-tools.nvim',

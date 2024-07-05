@@ -85,7 +85,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
 -- Set <space> as the leader key
--- See `:help mapleader`
+-- See `:help apleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
@@ -240,16 +240,8 @@ require('lazy').setup({
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
   {
-    'vuki656/package-info.nvim',
-    requires = 'MunifTanjim/nui.nvim',
-    config = function()
-      require('package-info').setup {
-        autostart = true,
-        hide_up_to_date = true,
-        hide_unstable_versions = false,
-        package_manager = 'yarn',
-      }
-    end,
+    'jose-elias-alvarez/null-ls.nvim',
+    opts = {},
   },
 
   {
@@ -584,17 +576,7 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         clangd = {},
-        -- gopls = {},
         rust_analyzer = {},
-        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-        --
-        -- Some languages (like typescript) have entire language plugins that can be useful:
-        --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
-        --
-        kotlin_language_server = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -638,6 +620,14 @@ require('lazy').setup({
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
           end,
+        },
+        ensure_installed = { 'jsonls', 'tsserver' },
+        automatic_installation = true,
+      }
+
+      require('null-ls').setup {
+        sources = {
+          require('null-ls').builtins.formatting.prettierd,
         },
       }
     end,
@@ -928,3 +918,7 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+--
+--
+--
+--

@@ -92,6 +92,7 @@ vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
+vim.o.termguicolors = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -144,6 +145,14 @@ vim.opt.splitbelow = true
 --  and `:help 'listchars'`
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+
+-- Set tab width to 4 spaces
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+
+-- Convert tabs to spaces (recommended for consistency)
+vim.opt.expandtab = true
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
@@ -239,15 +248,67 @@ require('lazy').setup({
 
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
-  {
-    'jose-elias-alvarez/null-ls.nvim',
-    opts = {},
-  },
 
+  -- typescript lsp
   {
     'pmizio/typescript-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
     opts = {},
+  },
+  -- auto close pairs, brackets, parenthese,
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter', -- Load the plugin when you enter insert mode
+    opts = {}, -- Add your configuration options here (optional)
+  },
+
+  -- catppucin theme
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
+    init = function()
+      -- Load the colorscheme here.
+      -- Like many other themes, this one has different styles, and you could load
+      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+      vim.cmd.colorscheme 'catppuccin'
+
+      -- You can configure highlights by doing something like:
+      vim.cmd.hi 'Comment gui=none'
+    end,
+    config = function()
+      require('catppuccin').setup {
+        flavour = 'latte', -- latte, frappe, macchiato, mocha
+        background = { -- :h background
+          light = 'latte',
+          dark = 'mocha',
+        },
+        dim_inactive = {
+          enabled = true, -- dims the background color of inactive window
+          shade = 'dark',
+          percentage = 0.15, -- percentage of the shade to apply to the inactive window
+        },
+        integrations = {
+          cmp = true,
+          gitsigns = true,
+          nvimtree = true,
+          treesitter = true,
+          notify = false,
+          mini = {
+            enabled = true,
+            indentscope_color = '',
+          },
+        },
+      }
+    end,
+  },
+
+  -- commenting plugin
+  {
+    'numToStr/Comment.nvim',
+    opts = {
+      -- add any options here
+    },
   },
 
   -- Here is a more advanced example where we pass configuration
@@ -613,26 +674,46 @@ require('lazy').setup({
       require('mason-lspconfig').setup {
         handlers = {
           function(server_name)
+            local lspconfig = require 'lspconfig'
             local server = servers[server_name] or {}
+
             -- This handles overriding only values explicitly passed
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for tsserver)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+            lspconfig[server_name].setup(server)
+
+            lspconfig.rust_analyzer.setup {
+              on_attach = function(client)
+                client.server_capabilities.documentFormattingProvider = true
+              end,
+              settings = {
+                ['rust_analyzer'] = {
+                  assist = {
+                    importGranularity = 'module', -- Options: "crate", "module"
+                    importPrefix = 'by_self', -- Options: "plain", "by_crate", "by_self"
+                  },
+                  cargo = {
+                    allFeatures = true, -- Enable all Cargo features for better completion
+                  },
+                  checkOnSave = {
+                    command = 'clippy',
+                  },
+                },
+              },
+              filetypes = { 'rust' },
+            }
+
+            lspconfig.taplo.setup {
+              filetypes = { 'toml' },
+            }
           end,
         },
-        ensure_installed = { 'jsonls', 'tsserver' },
+        ensure_installed = { 'jsonls', 'tsserver', 'rust_analyzer', 'taplo' },
         automatic_installation = true,
-      }
-
-      require('null-ls').setup {
-        sources = {
-          require('null-ls').builtins.formatting.prettierd,
-        },
       }
     end,
   },
-
   { -- Autoformat
     'stevearc/conform.nvim',
     lazy = false,
@@ -781,24 +862,6 @@ require('lazy').setup({
     end,
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    init = function()
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
-
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
-    end,
-  },
-
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -850,7 +913,7 @@ require('lazy').setup({
         enable = true,
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
         --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
+        --  the :qlist of additional_vim_regex_highlighting and disabled languages for indent.
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },

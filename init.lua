@@ -98,6 +98,9 @@ vim.o.termguicolors = true
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
+--
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 -- Make line numbers default
 vim.opt.number = true
@@ -309,6 +312,26 @@ require('lazy').setup({
     opts = {
       -- add any options here
     },
+  },
+
+  {
+    'nvim-tree/nvim-tree.lua',
+    version = '*',
+    lazy = false,
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = function()
+      require('nvim-tree').setup {
+        git = {
+          ignore = false,
+        },
+        filters = {
+          dotfiles = false,
+        },
+      }
+      vim.api.nvim_set_keymap('n', '<leader>e', ':NvimTreeFocus<CR>', { noremap = true, silent = true })
+    end,
   },
 
   -- Here is a more advanced example where we pass configuration
@@ -653,6 +676,15 @@ require('lazy').setup({
             },
           },
         },
+        eslint = {
+          filetypes = { 'javascript', 'javascripreact', 'typescript', 'typescriptreact' },
+          settings = {
+            eslint = {
+              useEslintrc = true,
+              plugin = { 'prettier' },
+            },
+          },
+        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -668,6 +700,7 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'prettierd',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -707,9 +740,37 @@ require('lazy').setup({
             lspconfig.taplo.setup {
               filetypes = { 'toml' },
             }
+
+            lspconfig.eslint.setup {
+              on_attach = function(client, bufnr)
+                -- Auto-format with either the ESLint server OR prettierd (if installed)
+                vim.api.nvim_create_autocmd('BufWritePre', {
+                  group = vim.api.nvim_create_augroup('eslint_prettier_format', {}),
+                  buffer = bufnr,
+                  callback = function()
+                    if vim.fn.executable 'prettierd' == 1 then
+                      vim.lsp.buf.format {
+                        async = false,
+                        filter = function(client)
+                          return client.name == 'null-ls'
+                        end,
+                      }
+                    else
+                      vim.lsp.buf.format {
+                        async = false,
+                        filter = function(client)
+                          return client.name == 'eslint'
+                        end,
+                      }
+                    end
+                  end,
+                })
+              end,
+              -- ... (eslint settings from previous configuration) ...
+            }
           end,
         },
-        ensure_installed = { 'jsonls', 'tsserver', 'rust_analyzer', 'taplo' },
+        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'eslint' },
         automatic_installation = true,
       }
     end,

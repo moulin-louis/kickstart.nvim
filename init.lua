@@ -271,26 +271,12 @@ require('lazy').setup({
     name = 'catppuccin',
     priority = 1000,
     init = function()
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme 'catppuccin'
-
-      -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
     end,
     config = function()
       require('catppuccin').setup {
         flavour = 'latte', -- latte, frappe, macchiato, mocha
-        background = { -- :h background
-          light = 'latte',
-          dark = 'mocha',
-        },
-        dim_inactive = {
-          enabled = true, -- dims the background color of inactive window
-          shade = 'dark',
-          percentage = 0.15, -- percentage of the shade to apply to the inactive window
-        },
         integrations = {
           cmp = true,
           gitsigns = true,
@@ -333,6 +319,8 @@ require('lazy').setup({
       vim.api.nvim_set_keymap('n', '<leader>e', ':NvimTreeFocus<CR>', { noremap = true, silent = true })
     end,
   },
+
+  { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {} },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
@@ -661,27 +649,14 @@ require('lazy').setup({
       local servers = {
         clangd = {},
         rust_analyzer = {},
+        eslint = {},
 
         lua_ls = {
-          -- cmd = {...},
-          -- filetypes = { ...},
-          -- capabilities = {},
           settings = {
             Lua = {
               completion = {
                 callSnippet = 'Replace',
               },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
-            },
-          },
-        },
-        eslint = {
-          filetypes = { 'javascript', 'javascripreact', 'typescript', 'typescriptreact' },
-          settings = {
-            eslint = {
-              useEslintrc = true,
-              plugin = { 'prettier' },
             },
           },
         },
@@ -696,7 +671,7 @@ require('lazy').setup({
       require('mason').setup()
 
       -- You can add other tools here that you want Mason to install
-      -- for you, so that they are available from within Neovim.
+      -- for you, so thatthey are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
@@ -742,31 +717,11 @@ require('lazy').setup({
             }
 
             lspconfig.eslint.setup {
-              on_attach = function(client, bufnr)
-                -- Auto-format with either the ESLint server OR prettierd (if installed)
-                vim.api.nvim_create_autocmd('BufWritePre', {
-                  group = vim.api.nvim_create_augroup('eslint_prettier_format', {}),
-                  buffer = bufnr,
-                  callback = function()
-                    if vim.fn.executable 'prettierd' == 1 then
-                      vim.lsp.buf.format {
-                        async = false,
-                        filter = function(client)
-                          return client.name == 'null-ls'
-                        end,
-                      }
-                    else
-                      vim.lsp.buf.format {
-                        async = false,
-                        filter = function(client)
-                          return client.name == 'eslint'
-                        end,
-                      }
-                    end
-                  end,
-                })
-              end,
-              -- ... (eslint settings from previous configuration) ...
+              settings = {
+                eslint = {
+                  useEslintrc = true,
+                },
+              },
             }
           end,
         },
@@ -807,7 +762,10 @@ require('lazy').setup({
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        -- javascript = { { "prettierd", "prettier" } },
+        javascript = { { 'prettierd', 'prettier' } },
+        typescript = { { 'prettierd', 'prettier' } },
+        javascriptreact = { { 'prettierd', 'prettier' } },
+        typescriptreact = { { 'prettierd', 'prettier' } },
       },
     },
   },

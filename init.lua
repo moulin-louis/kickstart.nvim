@@ -299,7 +299,7 @@ require('lazy').setup({
       -- add any options here
     },
   },
-
+  -- folder tree
   {
     'nvim-tree/nvim-tree.lua',
     version = '*',
@@ -320,6 +320,7 @@ require('lazy').setup({
     end,
   },
 
+  -- vertical indent line
   { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {} },
 
   -- Here is a more advanced example where we pass configuration

@@ -250,19 +250,13 @@ require('lazy').setup({
   --    require('Comment').setup({})
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  { 'numToStr/Comment.nvim',               opts = {} },
 
-  -- typescript lsp
-  {
-    'pmizio/typescript-tools.nvim',
-    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
-    opts = {},
-  },
   -- auto close pairs, brackets, parenthese,
   {
     'windwp/nvim-autopairs',
     event = 'InsertEnter', -- Load the plugin when you enter insert mode
-    opts = {}, -- Add your configuration options here (optional)
+    opts = {},             -- Add your configuration options here (optional)
   },
 
   -- catppucin theme
@@ -323,6 +317,9 @@ require('lazy').setup({
   -- vertical indent line
   { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {} },
 
+  -- hex editor
+  { 'RaafatTurki/hex.nvim' },
+
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
   --    require('gitsigns').setup({ ... })
@@ -356,7 +353,7 @@ require('lazy').setup({
   -- after the plugin has been loaded:
   --  config = function() ... end
 
-  { -- Useful plugin to show you pending keybinds.
+  {                     -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
@@ -408,7 +405,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -501,11 +498,11 @@ require('lazy').setup({
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
 
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
-      { 'folke/neodev.nvim', opts = {} },
+      { 'folke/neodev.nvim',       opts = {} },
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -650,7 +647,7 @@ require('lazy').setup({
       local servers = {
         clangd = {},
         rust_analyzer = {},
-        eslint = {},
+        biome = {},
 
         lua_ls = {
           settings = {
@@ -676,7 +673,6 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
-        'prettierd',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -700,7 +696,7 @@ require('lazy').setup({
                 ['rust_analyzer'] = {
                   assist = {
                     importGranularity = 'module', -- Options: "crate", "module"
-                    importPrefix = 'by_self', -- Options: "plain", "by_crate", "by_self"
+                    importPrefix = 'by_self',     -- Options: "plain", "by_crate", "by_self"
                   },
                   cargo = {
                     allFeatures = true, -- Enable all Cargo features for better completion
@@ -717,58 +713,30 @@ require('lazy').setup({
               filetypes = { 'toml' },
             }
 
-            lspconfig.eslint.setup {
-              settings = {
-                eslint = {
-                  useEslintrc = true,
+            lspconfig.tsserver.setup {}
+
+            lspconfig.volar.setup {
+              filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+              init_options = {
+                vue = {
+                  hybridMode = false,
                 },
               },
             }
+
+            lspconfig.biome.setup {}
+            vim.api.nvim_create_autocmd("BufWritePre", {
+              pattern = "*",
+              callback = function()
+                vim.lsp.buf.format({ async = false })
+              end,
+            })
           end,
         },
-        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'eslint' },
+        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'biome', 'volar' },
         automatic_installation = true,
       }
     end,
-  },
-  { -- Autoformat
-    'stevearc/conform.nvim',
-    lazy = false,
-    keys = {
-      {
-        '<leader>f',
-        function()
-          require('conform').format { async = true, lsp_fallback = true }
-        end,
-        mode = '',
-        desc = '[F]ormat buffer',
-      },
-    },
-    opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        return {
-          timeout_ms = 500,
-          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
-        }
-      end,
-      formatters_by_ft = {
-        lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
-        javascript = { { 'prettierd', 'prettier' } },
-        typescript = { { 'prettierd', 'prettier' } },
-        javascriptreact = { { 'prettierd', 'prettier' } },
-        typescriptreact = { { 'prettierd', 'prettier' } },
-      },
-    },
   },
 
   { -- Autocompletion

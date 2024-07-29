@@ -29,60 +29,60 @@ What is Kickstart?
     what your configuration is doing, and modify it to suit your needs.
 
     Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
+      make Neovim your own! That might mean leaving Kickstart just the way it is for a while
+      or immediately breaking it into modular pieces. It's up to you!
 
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
+      If you don't know anything about Lua, I recommend taking some time to read through
+      a guide. One possible example which will only take 10-15 minutes:
+        - https://learnxinyminutes.com/docs/lua/
 
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
+      After understanding a bit more about Lua, you can use `:help lua-guide` as a
+      reference for how Neovim integrates Lua.
+      - :help lua-guide
+      - (or HTML version): https://neovim.io/doc/user/lua-guide.html
 
-Kickstart Guide:
+  Kickstart Guide:
 
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
+    TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
 
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
+      If you don't know what this means, type the following:
+        - <escape key>
+        - :
+        - Tutor
+        - <enter key>
 
-    (If you already know the Neovim basics, you can skip this step.)
+      (If you already know the Neovim basics, you can skip this step.)
 
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua.
+    Once you've completed that, you can continue working through **AND READING** the rest
+    of the kickstart init.lua.
 
-  Next, run AND READ `:help`.
-    This will open up a help window with some basic information
-    about reading, navigating and searching the builtin help documentation.
+    Next, run AND READ `:help`.
+      This will open up a help window with some basic information
+      about reading, navigating and searching the builtin help documentation.
 
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite Neovim features.
+      This should be the first place you go to look when you're stuck or confused
+      with something. It's one of my favorite Neovim features.
 
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-    which is very useful when you're not exactly sure of what you're looking for.
+      MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
+      which is very useful when you're not exactly sure of what you're looking for.
 
-  I have left several `:help X` comments throughout the init.lua
-    These are hints about where to find more information about the relevant settings,
-    plugins or Neovim features used in Kickstart.
+    I have left several `:help X` comments throughout the init.lua
+      These are hints about where to find more information about the relevant settings,
+      plugins or Neovim features used in Kickstart.
 
-   NOTE: Look for lines like this
+     NOTE: Look for lines like this
 
-    Throughout the file. These are for you, the reader, to help you understand what is happening.
-    Feel free to delete them once you know what you're doing, but they should serve as a guide
-    for when you are first encountering a few different constructs in your Neovim config.
+      Throughout the file. These are for you, the reader, to help you understand what is happening.
+      Feel free to delete them once you know what you're doing, but they should serve as a guide
+      for when you are first encountering a few different constructs in your Neovim config.
 
-If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
+  If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
 
-I hope you enjoy your Neovim journey,
-- TJ
+  I hope you enjoy your Neovim journey,
+  - TJ
 
-P.S. You can delete this when you're done too. It's your config now! :)
---]]
+  P.S. You can delete this when you're done too. It's your config now! :)
+  --]]
 
 -- Set <space> as the leader key
 -- See `:help apleader`
@@ -176,7 +176,7 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
+vim.keymap.set('n', '<leader>m', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
@@ -197,10 +197,14 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<C-a>', '<C-w><Esc>', { noremap = true })
+vim.keymap.set('n', '<C-a><Left>', '<C-w><Left><Esc>', { noremap = true })
+vim.keymap.set('n', '<C-a><Down>', '<C-w><Down><Esc>', { noremap = true })
+vim.keymap.set('n', '<C-a><Up>', '<C-w><Up><Esc>', { noremap = true })
+vim.keymap.set('n', '<C-a><Right>', '<C-w><Right><Esc>', { noremap = true })
+vim.keymap.set('n', '<C-a>-', ':split<CR>', { noremap = true })
+vim.keymap.set('n', '<C-a>\\', ':vsplit<CR>', { noremap = true })
+vim.keymap.set('n', '<C-a>n', ':silent !tmux new-window<CR>', { noremap = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -252,12 +256,6 @@ require('lazy').setup({
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
 
-  -- typescript lsp
-  {
-    'pmizio/typescript-tools.nvim',
-    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
-    opts = {},
-  },
   -- auto close pairs, brackets, parenthese,
   {
     'windwp/nvim-autopairs',
@@ -322,6 +320,13 @@ require('lazy').setup({
 
   -- vertical indent line
   { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {} },
+
+  -- tmux integration
+  {
+    'aserowy/tmux.nvim',
+    opts = {},
+    config = function() end,
+  },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
@@ -651,6 +656,7 @@ require('lazy').setup({
         clangd = {},
         rust_analyzer = {},
         eslint = {},
+        tsserver = {},
 
         lua_ls = {
           settings = {
@@ -683,6 +689,7 @@ require('lazy').setup({
       require('mason-lspconfig').setup {
         handlers = {
           function(server_name)
+            local vue_lsp_path = '/home/llr/.yarn/bin/vue-language-server'
             local lspconfig = require 'lspconfig'
             local server = servers[server_name] or {}
 
@@ -724,9 +731,30 @@ require('lazy').setup({
                 },
               },
             }
+            lspconfig.tsserver.setup {
+              init_options = {
+                plugins = {
+                  {
+                    name = '@vue/typescript-plugin',
+                    location = vue_lsp_path,
+                    languages = { 'vue' },
+                  },
+                },
+              },
+              filetypes = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact' },
+            }
+            lspconfig.volar.setup {
+              filetypes = { 'vue' },
+              init_options = {
+                vue = {
+                  hybridMode = false,
+                },
+              },
+            }
+            lspconfig.tailwindcss.setup {}
           end,
         },
-        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'eslint' },
+        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'eslint', 'tsserver', 'volar', 'tailwindcss' },
         automatic_installation = true,
       }
     end,

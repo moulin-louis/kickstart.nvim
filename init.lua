@@ -205,6 +205,7 @@ vim.keymap.set('n', '<C-a><Right>', '<C-w><Right><Esc>', { noremap = true })
 vim.keymap.set('n', '<C-a>-', ':split<CR>', { noremap = true })
 vim.keymap.set('n', '<C-a>\\', ':vsplit<CR>', { noremap = true })
 vim.keymap.set('n', '<C-a>n', ':silent !tmux new-window<CR>', { noremap = true })
+vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, {})
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -217,6 +218,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
     vim.highlight.on_yank()
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "yaml",
+  callback = function()
+    vim.bo.formatprg = "yamlfmt"
   end,
 })
 
@@ -329,6 +337,22 @@ require('lazy').setup({
   },
   -- hex editor
   { 'RaafatTurki/hex.nvim' },
+
+  -- formater
+  {
+    "nvimtools/none-ls.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    config = function()
+      local null_ls = require("null-ls")
+      null_ls.setup({
+        sources = {
+          null_ls.builtins.formatting.yamlfmt,
+        },
+      })
+    end,
+  },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
@@ -658,7 +682,6 @@ require('lazy').setup({
         clangd = {},
         rust_analyzer = {},
         eslint = {},
-        tsserver = {},
         biome = {},
 
         lua_ls = {
@@ -691,7 +714,6 @@ require('lazy').setup({
       require('mason-lspconfig').setup {
         handlers = {
           function(server_name)
-            local vue_lsp_path = '/home/llr/.yarn/bin/vue-language-server'
             local lspconfig = require 'lspconfig'
             local server = servers[server_name] or {}
 
@@ -714,21 +736,25 @@ require('lazy').setup({
                   cargo = {
                     allFeatures = true, -- Enable all Cargo features for better completion
                   },
+                  procMacro = {
+                    enable = true,
+                  },
                   checkOnSave = {
                     command = 'clippy',
                   },
                 },
               },
+              root_dir = function(fname)
+                local util = require 'lspconfig.util'
+                return util.root_pattern("Cargo.toml", "rust-project.json")(fname)
+                    or util.find_git_ancestor(fname)
+              end,
               filetypes = { 'rust' },
             }
 
             lspconfig.taplo.setup {
               filetypes = { 'toml' },
             }
-
-            lspconfig.tsserver.setup {}
-
-
 
             lspconfig.volar.setup {
               filetypes = { 'vue' },
@@ -738,7 +764,10 @@ require('lazy').setup({
                 },
               },
             }
-            lspconfig.tailwindcss.setup {}
+
+            lspconfig.tailwindcss.setup {
+              filetypes = { "javascript", "typescript" }
+            }
 
             lspconfig.biome.setup {}
             vim.api.nvim_create_autocmd("BufWritePre", {
@@ -749,7 +778,7 @@ require('lazy').setup({
             })
           end,
         },
-        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'biome', 'volar' },
+        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'biome', 'volar', 'tailwindcss', 'docker_compose_language_service', 'dockerls' },
         automatic_installation = true,
       }
     end,
@@ -910,17 +939,13 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'kotlin' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'kotlin', 'yaml' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
         enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the :qlist of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
       },
-      indent = { enable = true, disable = { 'ruby' } },
+      indent = { enable = true },
     },
     config = function(_, opts)
       -- [[ Configure Treesitter ]] See `:help nvim-treesitter`

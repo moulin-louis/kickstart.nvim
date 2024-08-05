@@ -354,6 +354,13 @@ require('lazy').setup({
     end,
   },
 
+  --js import cost
+  {
+    'barrett-ruth/import-cost.nvim',
+    build = 'sh install.sh yarn',
+    config = true
+  },
+
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
   --    require('gitsigns').setup({ ... })
@@ -681,7 +688,6 @@ require('lazy').setup({
       local servers = {
         clangd = {},
         rust_analyzer = {},
-        eslint = {},
         biome = {},
 
         lua_ls = {

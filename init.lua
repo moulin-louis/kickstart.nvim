@@ -267,7 +267,15 @@ require('lazy').setup({
     opts = {}
   },
 
-  -- auto close pairs, brackets, parenthese,
+  -- autoclose pairs
+  {
+    'windwp/nvim-autopairs',
+    event = "InsertEnter",
+    config = true,
+    opts = {}
+  },
+
+  -- auto close html tag
   {
     "windwp/nvim-ts-autotag",
     dependencies = "nvim-treesitter/nvim-treesitter",

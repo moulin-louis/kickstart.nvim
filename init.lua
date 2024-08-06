@@ -269,13 +269,11 @@ require('lazy').setup({
 
   -- auto close pairs, brackets, parenthese,
   {
-    'windwp/nvim-autopairs',
-    event = 'InsertEnter', -- Load the plugin when you enter insert mode
-    opts = {
-      enable_close = true,
-      enable_rename = true,
-      enable_close_on_slash = true,
-    },
+    "windwp/nvim-ts-autotag",
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    config = function()
+      require("nvim-ts-autotag").setup()
+    end,
   },
 
   -- catppucin theme
@@ -988,7 +986,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  require 'kickstart.plugins.autopairs',
+  -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 

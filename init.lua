@@ -271,7 +271,11 @@ require('lazy').setup({
   {
     'windwp/nvim-autopairs',
     event = 'InsertEnter', -- Load the plugin when you enter insert mode
-    opts = {},             -- Add your configuration options here (optional)
+    opts = {
+      enable_close = true,
+      enable_rename = true,
+      enable_close_on_slash = true,
+    },
   },
 
   -- catppucin theme

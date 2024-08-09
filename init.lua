@@ -681,7 +681,6 @@ require('lazy').setup({
       local servers = {
         clangd = {},
         rust_analyzer = {},
-        eslint = {},
         biome = {},
 
         lua_ls = {

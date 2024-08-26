@@ -208,7 +208,6 @@ vim.keymap.set('n', '<C-a><Right>', '<C-w><Right><Esc>', { noremap = true })
 vim.keymap.set('n', '<C-a>-', ':split<CR>', { noremap = true })
 vim.keymap.set('n', '<C-a>\\', ':vsplit<CR>', { noremap = true })
 vim.keymap.set('n', '<C-a>n', ':silent !tmux new-window<CR>', { noremap = true })
-vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, {})
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -344,22 +343,6 @@ require('lazy').setup({
   -- hex editor
   { 'RaafatTurki/hex.nvim' },
 
-  -- formater
-  {
-    'nvimtools/none-ls.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
-    config = function()
-      local null_ls = require 'null-ls'
-      null_ls.setup {
-        sources = {
-          null_ls.builtins.formatting.yamlfmt,
-        },
-      }
-    end,
-  },
-
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
   --    require('gitsigns').setup({ ... })
@@ -393,7 +376,7 @@ require('lazy').setup({
   -- after the plugin has been loaded:
   --  config = function() ... end
 
-  {                     -- Useful plugin to show you pending keybinds.
+  { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
@@ -438,7 +421,7 @@ require('lazy').setup({
 
       -- Document existing key chains
       require('which-key').add {
-        { '<leader>c', group = '[C]ode',     mode = { 'n', 'x' } },
+        { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
         { '<leader>d', group = '[D]ocument' },
         { '<leader>r', group = '[R]ename' },
         { '<leader>s', group = '[S]earch' },
@@ -789,7 +772,7 @@ require('lazy').setup({
                 ['rust_analyzer'] = {
                   assist = {
                     importGranularity = 'module', -- Options: "crate", "module"
-                    importPrefix = 'by_self',     -- Options: "plain", "by_crate", "by_self"
+                    importPrefix = 'by_self', -- Options: "plain", "by_crate", "by_self"
                   },
                   cargo = {
                     allFeatures = true, -- Enable all Cargo features for better completion

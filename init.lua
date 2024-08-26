@@ -269,7 +269,6 @@ require('lazy').setup({
   -- "gc" to comment visual regions/lines
   {
     'numToStr/Comment.nvim',
-    opts = {},
   },
 
   -- autoclose pairs
@@ -301,15 +300,11 @@ require('lazy').setup({
     config = function()
       require('catppuccin').setup {
         flavour = 'frappe', -- latte, frappe, macchiato, mocha
-        integrations = {
-          cmp = true,
-          gitsigns = true,
-          nvimtree = true,
-          treesitter = true,
-          notify = false,
-          mini = {
+        integration = {
+          mason = true,
+          neotree = true,
+          telescope = {
             enabled = true,
-            indentscope_color = '',
           },
         },
       }

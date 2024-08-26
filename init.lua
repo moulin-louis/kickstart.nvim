@@ -335,13 +335,6 @@ require('lazy').setup({
   -- vertical indent line
   { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {} },
 
-  -- tmux integration
-  {
-    'aserowy/tmux.nvim',
-    opts = {},
-    config = function() end,
-  },
-
   -- hex editor
   { 'RaafatTurki/hex.nvim' },
 

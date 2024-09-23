@@ -713,7 +713,7 @@ require('lazy').setup({
             lspconfig.taplo.setup {
               filetypes = { 'toml' },
             }
-
+            lspconfig.eslint.setup {}
             lspconfig.volar.setup {
               filetypes = { 'vue' },
               init_options = {
@@ -727,7 +727,7 @@ require('lazy').setup({
             }
           end,
         },
-        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'volar', 'tailwindcss', 'docker_compose_language_service', 'dockerls' },
+        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'volar', 'tailwindcss', 'docker_compose_language_service', 'dockerls', 'eslint' },
         automatic_installation = true,
       }
     end,

@@ -1,46 +1,5 @@
 --[[
 
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
-What is Kickstart?
-
-  Kickstart.nvim is *not* a distribution.
-
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-      make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-      or immediately breaking it into modular pieces. It's up to you!
-
-      If you don't know anything about Lua, I recommend taking some time to read through
-      a guide. One possible example which will only take 10-15 minutes:
-        - https://learnxinyminutes.com/docs/lua/
-
-      After understanding a bit more about Lua, you can use `:help lua-guide` as a
-      reference for how Neovim integrates Lua.
-      - :help lua-guide
-      - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-
   Kickstart Guide:
 
     TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
@@ -71,17 +30,6 @@ What is Kickstart?
       plugins or Neovim features used in Kickstart.
 
      NOTE: Look for lines like this
-
-      Throughout the file. These are for you, the reader, to help you understand what is happening.
-      Feel free to delete them once you know what you're doing, but they should serve as a guide
-      for when you are first encountering a few different constructs in your Neovim config.
-
-  If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
-
-  I hope you enjoy your Neovim journey,
-  - TJ
-
-  P.S. You can delete this when you're done too. It's your config now! :)
   --]]
 
 -- Set <space> as the leader key
@@ -182,10 +130,6 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagn
 vim.keymap.set('n', '<leader>m', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
--- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
--- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
--- is not what someone will guess without a bit more experience.
---
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
@@ -310,27 +254,6 @@ require('lazy').setup({
       }
     end,
   },
-
-  -- folder tree
-  -- {
-  --   'nvim-tree/nvim-tree.lua',
-  --   version = '*',
-  --   lazy = false,
-  --   dependencies = {
-  --     'nvim-tree/nvim-web-devicons',
-  --   },
-  --   config = function()
-  --     require('nvim-tree').setup {
-  --       git = {
-  --         ignore = false,
-  --       },
-  --       filters = {
-  --         dotfiles = false,
-  --       },
-  --     }
-  --     vim.api.nvim_set_keymap('n', '<leader>e', ':NvimTreeFocus<CR>', { noremap = true, silent = true })
-  --   end,
-  -- },
 
   -- vertical indent line
   { 'lukas-reineke/indent-blankline.nvim', main = 'ibl', opts = {} },
@@ -718,7 +641,6 @@ require('lazy').setup({
       local servers = {
         clangd = {},
         rust_analyzer = {},
-        biome = {},
 
         lua_ls = {
           settings = {
@@ -799,21 +721,12 @@ require('lazy').setup({
                 },
               },
             }
-
             lspconfig.tailwindcss.setup {
-              filetypes = { 'javascript', 'typescript' },
+              filetypes = { 'javascript', 'typescript', 'vue', 'javascriptreact', 'typescriptreact' },
             }
-
-            lspconfig.biome.setup {}
-            vim.api.nvim_create_autocmd('BufWritePre', {
-              pattern = '*',
-              callback = function()
-                vim.lsp.buf.format { async = false }
-              end,
-            })
           end,
         },
-        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'biome', 'volar', 'tailwindcss', 'docker_compose_language_service', 'dockerls' },
+        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'eslint', 'volar', 'tailwindcss', 'docker_compose_language_service', 'dockerls' },
         automatic_installation = true,
       }
     end,
@@ -834,30 +747,13 @@ require('lazy').setup({
       },
     },
     opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        local lsp_format_opt
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          lsp_format_opt = 'never'
-        else
-          lsp_format_opt = 'fallback'
-        end
-        return {
-          timeout_ms = 500,
-          lsp_format = lsp_format_opt,
-        }
-      end,
+      format_on_save = {
+        timeout_ms = 500,
+        lsp_format = 'fallback',
+      },
       formatters_by_ft = {
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
         lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
       },
     },
   },

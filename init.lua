@@ -666,6 +666,7 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'prettier',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -726,7 +727,7 @@ require('lazy').setup({
             }
           end,
         },
-        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'eslint', 'volar', 'tailwindcss', 'docker_compose_language_service', 'dockerls' },
+        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'volar', 'tailwindcss', 'docker_compose_language_service', 'dockerls' },
         automatic_installation = true,
       }
     end,
@@ -746,16 +747,27 @@ require('lazy').setup({
         desc = '[F]ormat buffer',
       },
     },
-    opts = {
-      format_on_save = {
-        timeout_ms = 500,
-        lsp_format = 'fallback',
-      },
-      formatters_by_ft = {
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        lua = { 'stylua' },
-      },
-    },
+    opts = function(_, opts)
+      return {
+        format_on_save = {
+          timeout_ms = 500,
+          lsp_format = 'fallback',
+        },
+        formatters_by_ft = {
+          javascript = { 'prettier' },
+          typescript = { 'prettier' },
+          javascriptreact = { 'prettier' },
+          typescriptreact = { 'prettier' },
+          vue = { 'prettier' },
+          lua = { 'stylua' },
+        },
+        formatters = {
+          prettier = {
+            cwd = require('conform.util').root_file { '.editorconfig', 'package.json' },
+          },
+        },
+      }
+    end,
   },
 
   { -- Autocompletion

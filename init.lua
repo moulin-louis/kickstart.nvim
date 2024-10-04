@@ -641,6 +641,10 @@ require('lazy').setup({
       local servers = {
         clangd = {},
         rust_analyzer = {},
+        eslint = {},
+        ts_ls = {},
+        jsonls = {},
+        cmake = {},
 
         lua_ls = {
           settings = {
@@ -713,7 +717,6 @@ require('lazy').setup({
             lspconfig.taplo.setup {
               filetypes = { 'toml' },
             }
-            lspconfig.eslint.setup {}
             lspconfig.volar.setup {
               filetypes = { 'vue' },
               init_options = {
@@ -722,12 +725,26 @@ require('lazy').setup({
                 },
               },
             }
+            lspconfig.cmake.setup {}
             lspconfig.tailwindcss.setup {
               filetypes = { 'javascript', 'typescript', 'vue', 'javascriptreact', 'typescriptreact' },
             }
+            lspconfig.jsonls.setup {
+              capabilities = capabilities,
+              settings = {
+                json = {
+                  schemas = {
+                    {
+                      fileMatch = { 'manifest.json' },
+                      url = 'https://json.schemastore.org/chrome-manifest.json',
+                    },
+                  },
+                },
+              },
+            }
           end,
         },
-        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'volar', 'tailwindcss', 'docker_compose_language_service', 'dockerls', 'eslint' },
+        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'volar', 'tailwindcss', 'docker_compose_language_service', 'dockerls' },
         automatic_installation = true,
       }
     end,

@@ -767,7 +767,7 @@ require('lazy').setup({
     opts = function(_, opts)
       return {
         format_on_save = {
-          timeout_ms = 500,
+          timeout_ms = 2500,
           lsp_format = 'fallback',
         },
         formatters_by_ft = {

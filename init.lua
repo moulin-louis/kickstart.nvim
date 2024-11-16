@@ -134,24 +134,14 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
--- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
-
--- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows
---
---  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-a>', '<C-w><Esc>', { noremap = true })
-vim.keymap.set('n', '<C-a><Left>', '<C-w><Left><Esc>', { noremap = true })
-vim.keymap.set('n', '<C-a><Down>', '<C-w><Down><Esc>', { noremap = true })
-vim.keymap.set('n', '<C-a><Up>', '<C-w><Up><Esc>', { noremap = true })
-vim.keymap.set('n', '<C-a><Right>', '<C-w><Right><Esc>', { noremap = true })
-vim.keymap.set('n', '<C-a>-', ':split<CR>', { noremap = true })
-vim.keymap.set('n', '<C-a>\\', ':vsplit<CR>', { noremap = true })
-vim.keymap.set('n', '<C-a>n', ':silent !tmux new-window<CR>', { noremap = true })
+-- Window resizing
+vim.keymap.set('n', '<C-Up>', ':resize +2<CR>', { desc = 'Increase window height', noremap = true })
+vim.keymap.set('n', '<C-Down>', ':resize -2<CR>', { desc = 'Decrease window height', noremap = true })
+vim.keymap.set('n', '<C-Left>', ':vertical resize -2<CR>', { desc = 'Decrease window width', noremap = true })
+vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>', { desc = 'Increase window width', noremap = true })
+-- Window splits
+vim.keymap.set('n', '<leader>-', ':split<CR>', { desc = 'Split window horizontally', noremap = true })
+vim.keymap.set('n', '<leader>|', ':vsplit<CR>', { desc = 'Split window vertically', noremap = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -260,6 +250,25 @@ require('lazy').setup({
 
   -- hex editor
   { 'RaafatTurki/hex.nvim' },
+
+  -- simple floating terminal
+  {
+    'itmecho/neoterm.nvim',
+    opts = {
+      clear_on_run = true, -- Run clear command before user specified commands
+      position = 'center', -- Position of the terminal window: fullscreen (0), top (1), right (2), bottom (3), left (4), center (5) (string or integer value)
+      noinsert = false, -- Disable entering insert mode when opening the neoterm window
+      width = 0.5, -- Width of the terminal window (percentage, ratio, or range between 0-1)
+      height = 0.5, -- Height of the terminal window (percentage, ratio, or range between 0-1)
+    },
+    config = function()
+      local neoterm = require 'neoterm'
+      vim.keymap.set('n', '<leader>tt', neoterm.toggle, { desc = '[T]erm [T]oggle' })
+      vim.keymap.set('n', '<leader>tr', neoterm.run, { desc = '[T]erm [R]un' })
+      vim.keymap.set('n', '<leader>tR', neoterm.rerun, { desc = '[T]erm [R]erun' })
+      vim.keymap.set('n', '<leader>tx', neoterm.exit, { desc = '[T]erm e[X]it' })
+    end,
+  },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:

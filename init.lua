@@ -270,6 +270,56 @@ require('lazy').setup({
     end,
   },
 
+  -- task runner and job management
+  {
+    'stevearc/overseer.nvim',
+    keys = {
+      { '<leader>oo', '<cmd>OverseerToggle<cr>', desc = 'Toggle Overseer' },
+      { '<leader>or', '<cmd>OverseerRun<cr>', desc = 'Run Overseer Task' },
+      { '<leader>oc', '<cmd>OverseerBuild<cr>', desc = 'Build Current File' },
+    },
+    opts = {
+      -- Templates for common tasks
+      templates = {
+        'builtin', -- Include built-in templates
+      },
+      -- Task list appearance
+      task_list = {
+        direction = 'bottom',
+        min_height = 25,
+        max_height = 25,
+        bindings = {
+          ['?'] = 'ShowHelp',
+          ['q'] = 'Close',
+          ['<CR>'] = 'RunAction',
+          ['<C-e>'] = 'Edit',
+          ['o'] = 'Open',
+          ['<C-v>'] = 'OpenVsplit',
+        },
+      },
+      -- Component aliases
+      component_aliases = {
+        default = {
+          { 'display_duration', detail_level = 2 },
+          'on_output_summarize',
+          'on_exit_set_status',
+          'on_complete_notify',
+          'on_complete_dispose',
+        },
+      },
+      -- Status colors in the UI
+      status_colors = {
+        ['SUCCESS'] = 'DevIconLua',
+        ['FAILURE'] = 'DevIconRed',
+        ['CANCELED'] = 'DevIconGrey',
+        ['RUNNING'] = 'DevIconYellow',
+      },
+    },
+    config = function(_, opts)
+      require('overseer').setup(opts)
+    end,
+  },
+
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
   --    require('gitsigns').setup({ ... })

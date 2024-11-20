@@ -299,6 +299,56 @@ require('lazy').setup {
     end,
   },
 
+  -- search and replace project wide
+  {
+    'nvim-pack/nvim-spectre',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    keys = {
+      {
+        '<leader>sr',
+        function()
+          require('spectre').open()
+        end,
+        desc = 'Replace in files (Spectre)',
+      },
+      {
+        '<leader>sw',
+        function()
+          require('spectre').open_visual { select_word = true }
+        end,
+        desc = 'Search current word',
+      },
+      {
+        '<leader>sp',
+        function()
+          require('spectre').open_file_search()
+        end,
+        desc = 'Search in current file',
+      },
+    },
+    opts = {
+      mapping = {
+        ['toggle_line'] = {
+          map = 'dd',
+          cmd = "<cmd>lua require('spectre').toggle_line()<CR>",
+          desc = 'toggle current item',
+        },
+        ['enter_file'] = {
+          map = '<cr>',
+          cmd = "<cmd>lua require('spectre.actions').select_entry()<CR>",
+          desc = 'goto current file',
+        },
+        ['replace_cmd'] = {
+          map = '<leader>rc',
+          cmd = "<cmd>lua require('spectre.actions').replace_cmd()<CR>",
+          desc = 'input replace command',
+        },
+      },
+    },
+  },
+
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   -- For example, in the following configuration, we use:
   --  event = 'VimEnter'
@@ -421,10 +471,10 @@ require('lazy').setup {
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+      -- vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+      -- vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 

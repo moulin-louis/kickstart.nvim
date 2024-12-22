@@ -662,6 +662,7 @@ require('lazy').setup {
         jsonls = {},
         cmake = {},
         basedpyright = {},
+        nil_ls = {},
 
         lua_ls = {
           settings = {
@@ -770,9 +771,21 @@ require('lazy').setup {
                 },
               },
             }
+
+            lspconfig.nil_ls.setup {}
           end,
         },
-        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'volar', 'tailwindcss', 'docker_compose_language_service', 'dockerls', 'basedpyright' },
+        ensure_installed = {
+          'jsonls',
+          'rust_analyzer',
+          'taplo',
+          'volar',
+          'tailwindcss',
+          'docker_compose_language_service',
+          'dockerls',
+          'basedpyright',
+          'nil_ls',
+        },
         automatic_installation = true,
       }
     end,

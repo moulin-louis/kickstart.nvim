@@ -661,6 +661,8 @@ require('lazy').setup {
         ts_ls = {},
         jsonls = {},
         cmake = {},
+        basedpyright = {},
+        nil_ls = {},
 
         lua_ls = {
           settings = {
@@ -711,6 +713,9 @@ require('lazy').setup {
                   assist = {
                     importGranularity = 'module', -- Options: "crate", "module"
                     importPrefix = 'by_self', -- Options: "plain", "by_crate", "by_self"
+                  },
+                  check = {
+                    allTargets = false,
                   },
                   cargo = {
                     allFeatures = true, -- Enable all Cargo features for better completion
@@ -770,9 +775,32 @@ require('lazy').setup {
                 },
               },
             }
+            lspconfig.basedpyright.setup {
+              settings = {
+                python = {
+                  analysis = {
+                    autoSearchPaths = true,
+                    useLibraryCodeForTypes = true,
+                    diagnosticMode = 'workspace',
+                  },
+                },
+              },
+            }
+
+            lspconfig.nil_ls.setup {}
           end,
         },
-        ensure_installed = { 'jsonls', 'rust_analyzer', 'taplo', 'volar', 'tailwindcss', 'docker_compose_language_service', 'dockerls' },
+        ensure_installed = {
+          'jsonls',
+          'rust_analyzer',
+          'taplo',
+          'volar',
+          'tailwindcss',
+          'docker_compose_language_service',
+          'dockerls',
+          'basedpyright',
+          'nil_ls',
+        },
         automatic_installation = true,
       }
     end,

@@ -717,6 +717,11 @@ require('lazy').setup {
                   },
                   procMacro = {
                     enable = true,
+                    ignored = {
+                      leptos_macro = {
+                        'server',
+                      },
+                    },
                   },
                   checkOnSave = {
                     command = 'clippy',
@@ -725,7 +730,7 @@ require('lazy').setup {
               },
               root_dir = function(fname)
                 local util = require 'lspconfig.util'
-                return util.root_pattern('Cargo.toml', 'rust-project.json')(fname) or util.find_git_ancestor(fname)
+                return util.root_pattern('Cargo.toml', 'rust-project.json')(fname) or vim.fs.dirname(vim.fs.find('.git', { path = fname, upward = true })[1])
               end,
               filetypes = { 'rust' },
             }
@@ -742,6 +747,13 @@ require('lazy').setup {
               },
             }
             lspconfig.cmake.setup {}
+            lspconfig.ts_ls.setup {}
+            lspconfig.eslint.setup {
+              root_dir = function(fname)
+                local util = require 'lspconfig.util'
+                return util.root_pattern('tsconfig.json', 'jsconfig.json', 'package.json', '.git')(fname) or vim.fs.dirname(fname)
+              end,
+            }
             lspconfig.tailwindcss.setup {
               filetypes = { 'javascript', 'typescript', 'vue', 'javascriptreact', 'typescriptreact' },
             }
@@ -847,7 +859,6 @@ require('lazy').setup {
           --  Generally you don't need this, because nvim-cmp will display
           --  completions whenever it has completion options available.
           ['<C-Space>'] = cmp.mapping.complete {},
-
           -- Think of <c-l> as moving to the right of your snippet expansion.
           --  So if you have a snippet that's like:
           --  function $name($args)
@@ -933,7 +944,7 @@ require('lazy').setup {
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`

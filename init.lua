@@ -200,6 +200,45 @@ require('lazy').setup {
   --  This is equivalent to:
   --    require('Comment').setup({})
 
+  {
+    'folke/snacks.nvim',
+    priority = 1000,
+    lazy = false,
+    opts = {
+      animate = {
+        enabled = true,
+      },
+      bigfile = {
+        notify = true,
+      },
+      indent = {
+        animate = {
+          duration = {
+            step = 10,
+          },
+        },
+      },
+      terminal = {
+        enabled = true,
+      },
+    },
+    keys = {
+      {
+        '<leader>gg',
+        function()
+          Snacks.lazygit()
+        end,
+        desc = 'Lazygit',
+      },
+      {
+        '<c-/>',
+        function()
+          Snacks.terminal 'fish'
+        end,
+        desc = 'Toggle Terminal',
+      },
+    },
+  },
   -- "gc" to comment visual regions/lines
   {
     'numToStr/Comment.nvim',

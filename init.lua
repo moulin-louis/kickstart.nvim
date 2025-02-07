@@ -710,7 +710,6 @@ require('lazy').setup({
         ts_ls = {},
         jsonls = {},
         cmake = {},
-        basedpyright = {},
         nil_ls = {},
 
         lua_ls = {
@@ -804,7 +803,34 @@ require('lazy').setup({
               },
             }
             lspconfig.cmake.setup {}
-            lspconfig.ts_ls.setup {}
+            lspconfig.ts_ls.setup {
+              settings = {
+                typescript = {
+                  preferences = {
+                    autoImportSpecifierExcludeRegexes = { '^(node:)?os$' },
+                  },
+                },
+                completions = {
+                  completeFunctionCalls = true,
+                  quickSuggestions = {
+                    strings = 'on',
+                  },
+                },
+              },
+            }
+            lspconfig.pyright.setup {
+              settings = {
+                pyright = {
+                  disableOrganizeImports = true,
+                },
+                python = {
+                  analysis = {
+                    ignore = { '*' },
+                  },
+                },
+              },
+            }
+            lspconfig.ruff.setup {}
             lspconfig.eslint.setup {
               root_dir = function(fname)
                 local util = require 'lspconfig.util'
@@ -827,17 +853,6 @@ require('lazy').setup({
                 },
               },
             }
-            lspconfig.basedpyright.setup {
-              settings = {
-                python = {
-                  analysis = {
-                    autoSearchPaths = true,
-                    useLibraryCodeForTypes = true,
-                    diagnosticMode = 'workspace',
-                  },
-                },
-              },
-            }
 
             lspconfig.nil_ls.setup {}
           end,
@@ -850,8 +865,9 @@ require('lazy').setup({
           'tailwindcss',
           'docker_compose_language_service',
           'dockerls',
-          'basedpyright',
           'nil_ls',
+          'pyright',
+          'ruff',
         },
         automatic_installation = true,
       }
@@ -873,6 +889,7 @@ require('lazy').setup({
           typescript = { 'prettier' },
           vue = { 'prettier' },
           lua = { 'stylua' },
+          python = { 'ruff format' },
         },
         formatters = {
           prettier = {

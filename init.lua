@@ -239,7 +239,6 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]orkspace' },
         { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
   },
@@ -447,7 +446,6 @@ require('lazy').setup({
   require 'custom.plugins.tweaks',
   require 'custom.plugins.lsp',
   require 'custom.plugins.format',
-  require 'custom.plugins.neogen',
   -- additional rust plugins
   require 'custom.plugins.rust',
 

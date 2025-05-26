@@ -203,23 +203,8 @@ return {
           end,
           settings = {
             ['rust_analyzer'] = {
-              assist = {
-                importGranularity = 'module', -- Options: "crate", "module"
-                importPrefix = 'by_self', -- Options: "plain", "by_crate", "by_self"
-              },
-              check = {
-                allTargets = false,
-              },
               cargo = {
                 allFeatures = true, -- Enable all Cargo features for better completion
-              },
-              procMacro = {
-                enable = true,
-                ignored = {
-                  leptos_macro = {
-                    'server',
-                  },
-                },
               },
               checkOnSave = {
                 command = 'clippy',

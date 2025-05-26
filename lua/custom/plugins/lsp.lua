@@ -132,6 +132,7 @@ return {
 
         docker_compose_language_service = {},
         dockerls = {},
+        gopls = {},
 
         -- ///INFO: WEB JS/TS
         ts_ls = {
@@ -242,6 +243,9 @@ return {
             },
           },
         },
+
+        -- ///INFO: Terraform
+        terraformls = {},
       }
 
       local ensure_installed = vim.tbl_keys(servers or {})

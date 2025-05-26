@@ -420,6 +420,7 @@ require('lazy').setup({
         'python',
         'query',
         'regex',
+        'terraform',
         'vim',
         'vimdoc',
         'yaml',

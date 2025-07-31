@@ -252,7 +252,13 @@ require('lazy').setup({
       picker_integration = true,
     },
   },
-
+  {
+    'saecki/crates.nvim',
+    event = { 'BufRead Cargo.toml' },
+    config = function()
+      require('crates').setup()
+    end,
+  },
   {
     'kdheepak/lazygit.nvim',
     lazy = false,
